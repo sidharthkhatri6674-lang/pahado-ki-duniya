@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pahado Ki Duniya | Hotels & Homestays in Uttarakhand</title>
+  <meta name="description" content="Discover and book hotels, homestays and resorts in Mussoorie, Dehradun and Rishikesh.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+</head>
+<body>
+<header class="navbar">
+  <a class="brand" href="#home"><span>🏔️</span><div>Pahado Ki <b>Duniya</b><small>Stay. Explore. Escape.</small></div></a>
+  <nav>
+    <a href="#stays">Stays</a><a href="#destinations">Destinations</a><a href="#why">Why us</a><a href="#admin">Admin</a>
+  </nav>
+  <a class="outline-btn" href="#admin">List a Property</a>
+  <button class="menu" onclick="toggleMenu()">☰</button>
+</header>
+
+<main id="home">
+<section class="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <span class="eyebrow">YOUR UTTARAKHAND STAY GUIDE</span>
+    <h1>Stay closer to<br><em>the mountains.</em></h1>
+    <p>Discover hotels, homestays and resorts in Mussoorie, Dehradun and Rishikesh.</p>
+    <div class="search-box">
+      <label><span>📍</span><div>Where?<select id="searchCity"><option value="">All destinations</option><option>Mussoorie</option><option>Dehradun</option><option>Rishikesh</option></select></div></label>
+      <label><span>📅</span><div>Check-in<input id="checkin" type="date"></div></label>
+      <label><span>📅</span><div>Check-out<input id="checkout" type="date"></div></label>
+      <label><span>👥</span><div>Guests<input id="guests" type="number" min="1" value="2"></div></label>
+      <button class="search-btn" onclick="searchStays()">Search</button>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="destinations">
+  <div class="section-head"><div><span class="eyebrow dark">EXPLORE</span><h2>Choose your escape</h2></div><p>Three destinations. Endless mountain memories.</p></div>
+  <div class="destination-grid">
+    <button class="destination mussoorie" onclick="filterCity('Mussoorie')"><span>🏔️</span><div><h3>Mussoorie</h3><p>The Queen of Hills</p></div></button>
+    <button class="destination dehradun" onclick="filterCity('Dehradun')"><span>🌲</span><div><h3>Dehradun</h3><p>Gateway to the hills</p></div></button>
+    <button class="destination rishikesh" onclick="filterCity('Rishikesh')"><span>🌊</span><div><h3>Rishikesh</h3><p>River, yoga & adventure</p></div></button>
+  </div>
+</section>
+
+<section class="section light" id="stays">
+  <div class="section-head"><div><span class="eyebrow dark">HANDPICKED FOR YOU</span><h2>Popular stays</h2></div><button class="text-btn" onclick="filterCity('')">View all →</button></div>
+  <div id="propertyGrid" class="property-grid"></div>
+  <div id="emptyState" class="empty hidden">No stays found. Try another destination.</div>
+</section>
+
+<section class="why section" id="why">
+  <div><span class="eyebrow">WHY PAHADO KI DUNIYA</span><h2>Travel simple.<br>Stay better.</h2><p>We bring local hotels, homestays and resorts together so you can find your next Uttarakhand escape without the hassle.</p></div>
+  <div class="why-grid">
+    <article><span>✓</span><h3>Handpicked stays</h3><p>Quality properties selected for our platform.</p></article>
+    <article><span>₹</span><h3>Clear pricing</h3><p>See the nightly price before you enquire.</p></article>
+    <article><span>☎</span><h3>Local support</h3><p>Talk to us when you need help with a booking.</p></article>
+    <article><span>♥</span><h3>Made for the hills</h3><p>Focused on Mussoorie, Dehradun and Rishikesh.</p></article>
+  </div>
+</section>
+
+<section class="owner-cta">
+  <div><span class="eyebrow">HOTEL & HOMESTAY OWNERS</span><h2>Have a beautiful stay?</h2><p>List your property on Pahado Ki Duniya and reach travellers looking for their next mountain escape.</p></div>
+  <a class="primary-btn" href="#admin">Add your property →</a>
+</section>
+
+<section class="admin section" id="admin">
+  <div class="section-head"><div><span class="eyebrow dark">YOUR CONTROL ROOM</span><h2>Property manager</h2></div><span class="admin-note">Secure admin panel connected to Supabase.</span></div>
+  <div id="adminLogin" class="admin-layout">
+    <form id="loginForm" class="admin-form">
+      <h3>Admin login</h3>
+      <p class="admin-help">Sign in with the admin account you created in Supabase Authentication.</p>
+      <label>Email<input id="adminEmail" type="email" required placeholder="you@example.com"></label>
+      <label>Password<input id="adminPassword" type="password" required placeholder="Your password"></label>
+      <button class="primary-btn" type="submit">Sign in</button>
+      <div id="loginMessage" class="admin-message"></div>
+    </form>
+  </div>
+
+  <div id="adminDashboard" class="hidden">
+    <div class="admin-toolbar"><div><b id="adminUserEmail"></b><span> • Admin</span></div><button class="outline-btn" onclick="adminLogout()">Log out</button></div>
+    <div class="admin-layout">
+      <form id="propertyForm" class="admin-form">
+        <h3>Add a new stay</h3>
+        <label>Property name<input id="pName" required placeholder="e.g. Pine View Homestay"></label>
+        <div class="two"><label>City<select id="pCity" required><option>Mussoorie</option><option>Dehradun</option><option>Rishikesh</option></select></label><label>Type<select id="pType"><option>Hotel</option><option>Homestay</option><option>Resort</option><option>Villa</option><option>Hostel</option></select></label></div>
+        <div class="two"><label>Price / night (₹)<input id="pPrice" type="number" min="0" required placeholder="2499"></label><label>Rating<input id="pRating" type="number" min="1" max="5" step=".1" value="4.5"></label></div>
+        <label>Image URL<input id="pImage" placeholder="https://.../hotel-photo.jpg"></label>
+        <label>Description<textarea id="pDescription" required placeholder="Tell travellers about the property..."></textarea></label>
+        <label>WhatsApp / phone<input id="pPhone" placeholder="+91 98765 43210"></label>
+        <button class="primary-btn" type="submit">Publish stay</button>
+        <div id="adminMessage" class="admin-message"></div>
+      </form>
+      <div class="admin-list"><h3>Your stays <span id="count"></span></h3><div id="adminProperties"></div></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="brand"><span>🏔️</span><div>Pahado Ki <b>Duniya</b><small>Stay. Explore. Escape.</small></div></div><p>Hotels • Homestays • Resorts • Uttarakhand</p><div class="footer-links"><a href="#stays">Stays</a><a href="#destinations">Destinations</a><a href="#admin">List Property</a></div><small>© 2026 Pahado Ki Duniya. All rights reserved.</small></footer>
+
+<div id="propertyModal" class="modal hidden"><div class="modal-card"><button class="close" onclick="closeModal()">×</button><img id="modalImage" src="" alt=""><div class="modal-body"><span id="modalType" class="pill"></span><h2 id="modalName"></h2><p id="modalLocation"></p><p id="modalDescription"></p><div class="modal-price"><b id="modalPrice"></b><span>/ night</span></div><div class="booking-box"><h3>Request a booking</h3><div class="two"><input id="bookName" placeholder="Your name"><input id="bookPhone" placeholder="Phone / WhatsApp"></div><div class="two"><input id="bookIn" type="date"><input id="bookOut" type="date"></div><input id="bookGuests" type="number" min="1" value="2" placeholder="Guests"><button class="primary-btn" onclick="submitBooking()">Send booking request</button><small>For this first version, the request opens WhatsApp. Online payments can be added later.</small></div></div></div></div>
+<div id="toast" class="toast"></div>
+<script src="script.js"></script>
+</body>
+</html>
